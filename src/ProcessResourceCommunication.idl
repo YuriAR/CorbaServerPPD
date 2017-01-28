@@ -1,0 +1,5 @@
+module ProcessResourceCommunication{
+	interface ProcessInterface{
+        void concedeResource();
+	};
+};
