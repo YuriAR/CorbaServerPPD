@@ -6,6 +6,7 @@ import javafx.scene.control.TextInputDialog;
 import java.net.URL;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable, UICommunication{
@@ -21,17 +22,22 @@ public class Controller implements Initializable, UICommunication{
     public void initialize(URL location, ResourceBundle resources) {
         TextInputDialog dialog = new TextInputDialog("");
         dialog.setTitle("Server");
-        dialog.setHeaderText("Porta do servidor");
+        dialog.setHeaderText("Porta do servidor de nomes");
         dialog.setContentText("Digite a porta: ");
+
+        manager = new CorbaManager(this);
+
 
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()){
-            manager = new CorbaManager(this, new String[] {"localhost", result.get()});
-            manager.initCorba();
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", result.get());
+            manager.initCorba(props);
         }
         else{
-            manager = new CorbaManager(this, new String[] {"localhost", "1516"});
-            manager.initCorba();
+            Properties props = new Properties();
+            props.put("org.omg.CORBA.ORBInitialPort", "1050");
+            manager.initCorba(props);
         }
     }
 
@@ -57,5 +63,10 @@ public class Controller implements Initializable, UICommunication{
             queueString = queueString + process + "\n";
         }
         processQueue.setText(queueString);
+    }
+
+    @Override
+    public String onRegister() {
+        return manager.registerClient();
     }
 }

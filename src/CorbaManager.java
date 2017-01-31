@@ -10,6 +10,7 @@ import org.omg.PortableServer.POAHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Created by yurir on 27/01/2017.
@@ -18,19 +19,20 @@ public class CorbaManager {
 
     String processUsingResource;
     List<String> processQueue;
+    Integer nextProcessId;
     UICommunication listener;
     String [] args;
     ORB orb;
 
-    public CorbaManager(UICommunication listener, String [] args){
+    public CorbaManager(UICommunication listener){
+        nextProcessId = 0;
         this.processQueue = new ArrayList<>();
         this.listener = listener;
-        this.args = args;
     }
 
-    public void initCorba(){
+    public void initCorba(Properties props){
         try{
-            orb = ORB.init(args,null);
+            orb = ORB.init(new String[]{},props);
             org.omg.CORBA.Object objPoa = orb.resolve_initial_references("RootPOA");
             POA rootPOA = POAHelper.narrow(objPoa);
             org.omg.CORBA.Object obj = orb.resolve_initial_references("NameService");
@@ -48,6 +50,8 @@ public class CorbaManager {
             ex.printStackTrace();
         }
     }
+
+    //public void
 
     public void requestResource(String pId){
         if (isResourceFree()){
@@ -86,6 +90,12 @@ public class CorbaManager {
             System.out.println("Outro Erro : " + e);
             e.printStackTrace(System.out);
         }
+    }
+
+    public String registerClient(){
+        String pId = String.valueOf(nextProcessId);
+        nextProcessId += 1;
+        return pId;
     }
 
     public Boolean isResourceFree(){

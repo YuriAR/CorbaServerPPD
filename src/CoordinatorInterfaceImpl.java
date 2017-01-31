@@ -1,5 +1,6 @@
 import CoordinatorResourceCommunication.CoordinatorInterfacePOA;
 import javafx.application.Platform;
+import org.omg.CORBA.StringHolder;
 
 /**
  * Created by yurir on 27/01/2017.
@@ -30,5 +31,10 @@ public class CoordinatorInterfaceImpl extends CoordinatorInterfacePOA{
                 listener.onResourceReleased();
             }
         });
+    }
+
+    @Override
+    public void registerId(StringHolder pId) {
+        pId.value = listener.onRegister();
     }
 }

@@ -8,4 +8,5 @@ public interface UICommunication {
     public void onResourceReleased();
     public void onStatusChanged(String status);
     public void onQueueChanged(List<String> queue);
+    public String onRegister();
 }
